@@ -2,30 +2,29 @@ package main
 
 import (
 	"fmt"
-	"runtime"
+	"sync"
+	"time"
 )
 
 func main() {
-	runtime.GOMAXPROCS(2)
+	group := sync.WaitGroup{}
 
-	var messages = make(chan string)
+	var channel = make(chan string)
+	defer close(channel)
+	group.Add(1)
+	go func() {
 
-	var sayHelloTo = func(who string) {
-		var data = fmt.Sprintf("hello %s", who)
-		messages <- data
+		time.Sleep(2 * time.Second)
+		channel <- "Teguh"
+		fmt.Println("selesai")
+		group.Done()
 
-	}
+	}()
 
-	go sayHelloTo("john wick")
-	go sayHelloTo("ethan hunt")
-	go sayHelloTo("jason bourne")
+	// time.Sleep(5 * time.Second)
 
-	var message1 = <-messages
-	fmt.Println(message1)
+	data := <-channel
+	fmt.Println(data)
+	group.Wait()
 
-	var message2 = <-messages
-	fmt.Println(message2)
-
-	var message3 = <-messages
-	fmt.Println(message3)
 }

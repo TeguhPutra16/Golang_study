@@ -28,6 +28,9 @@ func main() {
 		case data := <-channel2:
 			fmt.Println("data 2", data)
 			count++
+
+		default:
+			fmt.Println("Menunggu data")
 		}
 		if count == 2 {
 			break
